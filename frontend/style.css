@@ -1,0 +1,68 @@
+/* Glassmorphism styling */
+.glass-card {
+    background: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+}
+
+/* Drag over styling */
+.drop-active {
+    border-color: #22c55e !important; /* brand-500 */
+    background-color: rgba(220, 252, 231, 0.6) !important; /* brand-100 */
+}
+
+/* Image blur for loading state */
+.blur-preview {
+    filter: blur(6px) brightness(0.8);
+    transform: scale(1.05); 
+    transition: all 0.4s ease-in-out;
+}
+
+/* Smooth progress bar animation */
+.progress-bar-fill {
+    width: 0%;
+    transition: width 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Toast animations */
+@keyframes slideInUp {
+    from {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeOutDown {
+    from {
+        transform: translateY(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+}
+
+.toast-enter {
+    animation: slideInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.toast-exit {
+    animation: fadeOutDown 0.3s ease-in forwards;
+}
+
+/* Hide scrollbar for a cleaner look if content overflows */
+::-webkit-scrollbar {
+    width: 6px;
+}
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+::-webkit-scrollbar-thumb {
+    background-color: #d1d5db;
+    border-radius: 10px;
+}

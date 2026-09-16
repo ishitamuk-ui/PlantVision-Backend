@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PlantVision | AI Leaf Diagnostics</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="style.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            900: '#14532d',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Importing Inter Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="bg-gradient-to-br from-brand-50 via-white to-green-100 min-h-screen text-gray-800 p-4 md:p-8 flex items-center justify-center font-sans">
+
+    <!-- Glassmorphism Main Card -->
+    <main class="w-full max-w-5xl glass-card rounded-3xl shadow-2xl overflow-hidden flex flex-col md:flex-row relative z-10 border border-white/60">
+        
+        <!-- Left Column: Uploader & Samples -->
+        <div class="w-full md:w-1/2 p-8 lg:p-10 border-r border-gray-100/50 flex flex-col">
+            
+            <!-- Header -->
+            <header class="mb-8">
+                <div class="flex items-center gap-3 mb-2">
+                    <div class="bg-brand-500 text-white p-2 rounded-xl shadow-lg shadow-brand-500/30">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
+                    </div>
+                    <h1 class="text-3xl font-bold tracking-tight text-gray-900">PlantVision</h1>
+                </div>
+                <div class="inline-flex items-center px-3 py-1 rounded-full bg-brand-100 text-brand-700 text-xs font-semibold tracking-wide uppercase border border-brand-200">
+                    ResNet-34 • 38 Plant Classes • 99%+ Accuracy
+                </div>
+            </header>
+
+            <!-- Upload Area -->
+            <div id="upload-zone" class="flex-1 flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-2xl bg-white/50 p-8 text-center cursor-pointer hover:bg-brand-50 hover:border-brand-400 transition-all duration-300 relative group min-h-[250px]">
+                <input type="file" id="file-input" class="hidden" accept="image/jpeg, image/png, image/jpg, image/webp">
+                
+                <div class="text-gray-400 group-hover:text-brand-600 transition-colors duration-300">
+                    <svg class="w-16 h-16 mx-auto mb-4 stroke-current" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+                    <p class="font-semibold text-lg text-gray-700">Click to upload leaf image</p>
+                    <p class="text-sm mt-2 font-medium">or drag and drop here</p>
+                </div>
+            </div>
+
+            <!-- Preview & Loading Area (Hidden initially) -->
+            <div id="preview-container" class="hidden flex-1 relative rounded-2xl overflow-hidden shadow-lg border border-gray-200 min-h-[250px] bg-black">
+                <img id="image-preview" src="" alt="Uploaded Leaf" class="w-full h-full object-cover opacity-90">
+                
+                <!-- Overlay Loader -->
+                <div id="loader-overlay" class="hidden absolute inset-0 bg-white/50 backdrop-blur-md flex flex-col items-center justify-center z-10 transition-all duration-300">
+                    <div class="animate-spin rounded-full h-14 w-14 border-4 border-brand-200 border-t-brand-600 mb-4 shadow-lg"></div>
+                    <p class="text-brand-900 font-bold bg-white/90 px-5 py-2 rounded-full shadow-sm tracking-wide text-sm">AI Pixel Analysis in Progress...</p>
+                </div>
+            </div>
+
+            <!-- Try with Sample Leaves -->
+            <div class="mt-8">
+                <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Or try with sample leaves:</p>
+                <div class="flex gap-3">
+                    <button class="sample-btn group relative overflow-hidden rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition flex-1 h-20" data-url="https://images.unsplash.com/photo-1587334274328-64186a80aeee?w=300&q=80">
+                        <img src="https://images.unsplash.com/photo-1587334274328-64186a80aeee?w=300&q=80" class="w-full h-full object-cover group-hover:scale-110 transition duration-500" alt="Sample 1">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end p-2">
+                            <span class="text-white text-[10px] font-bold leading-tight">Apple Scab</span>
+                        </div>
+                    </button>
+                    <button class="sample-btn group relative overflow-hidden rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition flex-1 h-20" data-url="https://images.unsplash.com/photo-1592398555811-19db9a957816?w=300&q=80">
+                        <img src="https://images.unsplash.com/photo-1592398555811-19db9a957816?w=300&q=80" class="w-full h-full object-cover group-hover:scale-110 transition duration-500" alt="Sample 2">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end p-2">
+                            <span class="text-white text-[10px] font-bold leading-tight">Tomato Healthy</span>
+                        </div>
+                    </button>
+                    <button class="sample-btn group relative overflow-hidden rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition flex-1 h-20" data-url="https://images.unsplash.com/photo-1615818451187-5c210d709f18?w=300&q=80">
+                        <img src="https://images.unsplash.com/photo-1615818451187-5c210d709f18?w=300&q=80" class="w-full h-full object-cover group-hover:scale-110 transition duration-500" alt="Sample 3">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end p-2">
+                            <span class="text-white text-[10px] font-bold leading-tight">Potato Blight</span>
+                        </div>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Right Column: How it Works / Results -->
+        <div class="w-full md:w-1/2 bg-gray-50/50 p-8 lg:p-10 relative flex flex-col justify-center">
+            
+            <!-- Default State: How It Works -->
+            <div id="how-it-works" class="space-y-8 transition-opacity duration-500">
+                <h3 class="text-xl font-bold text-gray-900 mb-6">How It Works</h3>
+                
+                <div class="flex items-start gap-4">
+                    <div class="flex-shrink-0 w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center text-brand-600 font-bold border border-brand-100">1</div>
+                    <div>
+                        <h4 class="font-semibold text-gray-800">Upload Leaf Image</h4>
+                        <p class="text-sm text-gray-500 mt-1">Provide a clear, well-lit photo of a single plant leaf showcasing potential symptoms.</p>
+                    </div>
+                </div>
+                
+                <div class="flex items-start gap-4">
+                    <div class="flex-shrink-0 w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center text-brand-600 font-bold border border-brand-100">2</div>
+                    <div>
+                        <h4 class="font-semibold text-gray-800">AI Pixel Analysis</h4>
+                        <p class="text-sm text-gray-500 mt-1">Our ResNet-34 engine extracts deep features and compares them against 38 known pathogen profiles.</p>
+                    </div>
+                </div>
+                
+                <div class="flex items-start gap-4">
+                    <div class="flex-shrink-0 w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center text-brand-600 font-bold border border-brand-100">3</div>
+                    <div>
+                        <h4 class="font-semibold text-gray-800">Diagnostic Report</h4>
+                        <p class="text-sm text-gray-500 mt-1">Receive an instant, confidence-scored diagnosis along with targeted treatment recommendations.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Active State: Results (Hidden initially) -->
+            <div id="results-view" class="hidden flex-col h-full opacity-0 transition-opacity duration-500">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-xl font-bold text-gray-900">Diagnostic Report</h3>
+                    <button id="reset-btn" class="text-xs font-semibold text-brand-600 hover:text-brand-800 bg-brand-50 hover:bg-brand-100 px-3 py-1.5 rounded-full transition">Start Over</button>
+                </div>
+                
+                <div class="flex-1 space-y-6">
+                    <!-- Top Diagnosis -->
+                    <div class="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+                        <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Primary Match</p>
+                        <h4 id="primary-diagnosis" class="text-2xl font-bold text-gray-900 leading-tight">--</h4>
+                        <div class="flex items-center gap-3 mt-3">
+                            <div class="w-full bg-gray-100 rounded-full h-3 overflow-hidden">
+                                <div id="primary-bar" class="progress-bar-fill h-3 rounded-full bg-gradient-to-r from-brand-400 to-brand-600" style="width: 0%"></div>
+                            </div>
+                            <span id="primary-pct" class="text-sm font-bold text-brand-700 w-12 text-right">0%</span>
+                        </div>
+                    </div>
+
+                    <!-- Suggested Action Card -->
+                    <div id="action-card" class="rounded-2xl p-5 shadow-sm border">
+                        <div class="flex items-center gap-2 mb-2">
+                            <svg id="action-icon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            <h5 id="action-title" class="font-bold">Suggested Action</h5>
+                        </div>
+                        <p id="action-text" class="text-sm leading-relaxed"></p>
+                    </div>
+
+                    <!-- Secondary Matches -->
+                    <div>
+                        <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Alternative Matches</p>
+                        <div id="secondary-matches" class="space-y-4">
+                            <!-- Injected via JS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Toast Notification -->
+    <div id="toast-container" class="fixed bottom-6 right-6 z-50 flex flex-col gap-3"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
