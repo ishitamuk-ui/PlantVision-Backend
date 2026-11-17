@@ -1,0 +1,35 @@
+[project]
+name = "datasleuth"
+version = "0.1.0"
+description = "Automated Dataset Auditing & ML Benchmarking Platform"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "streamlit>=1.35.0",
+    "pandas>=2.0.0",
+    "numpy>=1.24.0",
+    "scikit-learn>=1.3.0",
+    "plotly>=5.18.0",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = "-v --tb=short"
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+exclude = [
+    "src",
+    "app/main.py",
+    "app/static",
+    "scripts",
+    "notebooks",
+    "venv",
+    ".git",
+]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I"]
+ignore = ["E501", "W293", "W291"]
