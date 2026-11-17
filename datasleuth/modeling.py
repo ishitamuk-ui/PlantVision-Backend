@@ -330,6 +330,9 @@ def run_benchmark_suite(
 
 def plot_confusion_matrix(y_true: np.ndarray, y_pred: np.ndarray, model_name: str) -> go.Figure:
     """Generate an annotated interactive confusion matrix heatmap."""
+    from datasleuth.eda import get_current_theme, get_plotly_layout, get_plotly_template
+
+    t = get_current_theme()
     labels = sorted(list(set(y_true) | set(y_pred)))
     label_str = [str(lbl) for lbl in labels]
     
@@ -347,12 +350,10 @@ def plot_confusion_matrix(y_true: np.ndarray, y_pred: np.ndarray, model_name: st
         color_continuous_scale="Purples",
         labels=dict(x="Predicted Class", y="Actual Class", color="Count"),
         title=f"Confusion Matrix: {model_name}",
-        template="plotly_dark",
+        template=get_plotly_template(t),
     )
     fig.update_layout(
-        font={"family": "Inter, sans-serif", "color": "#94A3B8"},
-        paper_bgcolor="rgba(0,0,0,0)",
-        plot_bgcolor="rgba(0,0,0,0)",
+        **get_plotly_layout(t),
         margin={"l": 50, "r": 30, "t": 50, "b": 50},
         xaxis_title="Predicted Class",
         yaxis_title="Actual Class",
@@ -362,38 +363,48 @@ def plot_confusion_matrix(y_true: np.ndarray, y_pred: np.ndarray, model_name: st
 
 def plot_residuals(y_true: np.ndarray, y_pred: np.ndarray, model_name: str) -> go.Figure:
     """Plot actual vs predicted values alongside residual distribution."""
+    from datasleuth.eda import (
+        get_bar_color,
+        get_current_theme,
+        get_plotly_layout,
+        get_plotly_template,
+    )
+
+    t = get_current_theme()
     residuals = y_true - y_pred
     
     fig = go.Figure()
-    # Scatter of actual vs predicted
     fig.add_trace(go.Scatter(
         x=y_pred,
         y=residuals,
         mode="markers",
-        marker={"color": CONFIG.COLOR_LAVENDER_BAR, "opacity": 0.75, "size": 7},
+        marker={"color": get_bar_color(t), "opacity": 0.75, "size": 7},
         name="Residuals",
         hovertemplate="Predicted: %{x:.2f}<br>Residual: %{y:.2f}<extra></extra>",
     ))
-    # Zero line
     fig.add_hline(y=0, line_dash="dash", line_color=CONFIG.COLOR_DANGER, annotation_text="Zero Error")
     
     fig.update_layout(
-        font={"family": "Inter, sans-serif", "color": "#94A3B8"},
+        **get_plotly_layout(t),
         title=f"Residual Plot: {model_name} (Predicted vs Residuals)",
         xaxis_title="Predicted Values",
         yaxis_title="Residuals (Actual - Predicted)",
-        template="plotly_dark",
-        paper_bgcolor="rgba(0,0,0,0)",
-        plot_bgcolor="rgba(0,0,0,0)",
+        template=get_plotly_template(t),
         margin={"l": 50, "r": 30, "t": 50, "b": 50},
-        xaxis={"gridcolor": "rgba(255, 255, 255, 0.06)", "linecolor": "rgba(255, 255, 255, 0.15)"},
-        yaxis={"gridcolor": "rgba(255, 255, 255, 0.06)", "linecolor": "rgba(255, 255, 255, 0.15)"},
     )
     return fig
 
 
 def plot_feature_importance(importances: dict[str, float], top_n: int = 15) -> go.Figure:
     """Plot top feature importances or coefficients."""
+    from datasleuth.eda import (
+        get_bar_color,
+        get_current_theme,
+        get_plotly_layout,
+        get_plotly_template,
+    )
+
+    t = get_current_theme()
     sorted_items = sorted(importances.items(), key=lambda x: x[1], reverse=True)[:top_n]
     if not sorted_items:
         fig = go.Figure()
@@ -407,20 +418,16 @@ def plot_feature_importance(importances: dict[str, float], top_n: int = 15) -> g
         x=vals,
         y=names,
         orientation="h",
-        marker_color=CONFIG.COLOR_PRIMARY,
+        marker_color=get_bar_color(t),
         text=[f"{v:.3f}" for v in vals],
         textposition="outside",
     ))
     fig.update_layout(
-        font={"family": "Inter, sans-serif", "color": "#94A3B8"},
+        **get_plotly_layout(t),
         title=f"Top {len(sorted_items)} Feature Importances / Coefficients",
         xaxis_title="Relative Importance / Magnitude",
         yaxis_title="Feature Name",
-        template="plotly_dark",
-        paper_bgcolor="rgba(0,0,0,0)",
-        plot_bgcolor="rgba(0,0,0,0)",
+        template=get_plotly_template(t),
         margin={"l": 100, "r": 40, "t": 50, "b": 50},
-        xaxis={"gridcolor": "rgba(255, 255, 255, 0.06)", "linecolor": "rgba(255, 255, 255, 0.15)"},
-        yaxis={"gridcolor": "rgba(255, 255, 255, 0.06)", "linecolor": "rgba(255, 255, 255, 0.15)"},
     )
     return fig

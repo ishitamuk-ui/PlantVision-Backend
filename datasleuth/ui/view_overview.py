@@ -102,8 +102,8 @@ def render_overview_view() -> None:
         st.markdown(
             """
             <div class="ds-card" style="text-align: center; padding: 48px 24px;">
-                <h3 style="color: #FFFFFF; font-family: 'Playfair Display', serif; margin-bottom: 8px;">No Active Dataset</h3>
-                <p style="color: #94A3B8; font-size: 14px; max-width: 480px; margin: 0 auto 20px auto;">
+                <h3 style="color: var(--ds-text-primary); font-family: 'Playfair Display', serif; margin-bottom: 8px;">No Active Dataset</h3>
+                <p style="color: var(--ds-text-muted); font-size: 14px; max-width: 480px; margin: 0 auto 20px auto;">
                     Upload a tabular CSV file or select a built-in benchmark dataset to inspect data quality and benchmark ML baselines.
                 </p>
             </div>

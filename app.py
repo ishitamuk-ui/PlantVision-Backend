@@ -24,8 +24,12 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-# Apply Editorial Dark & Lavender CSS
-apply_custom_styles()
+# Theme State Initialization (default to Dark)
+if "theme" not in st.session_state:
+    st.session_state["theme"] = "dark"
+
+# Apply Editorial CSS according to active theme
+apply_custom_styles(theme=st.session_state["theme"])
 
 
 def init_session_state() -> None:
@@ -58,20 +62,42 @@ def init_session_state() -> None:
 
 init_session_state()
 
-# Sidebar Navigation matching the exact reference design
+# Sidebar Navigation matching the refined design
 with st.sidebar:
     # 1. Logo and Wordmark
     st.markdown(
         """
         <div class="sidebar-brand-container">
-            <div class="sidebar-logo-icon"></div>
+            <div class="sidebar-logo-icon">
+                <svg viewBox="0 0 24 24">
+                    <circle cx="11" cy="11" r="7"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+            </div>
             <div class="sidebar-brand-text">DataSleuth</div>
         </div>
         """,
         unsafe_allow_html=True,
     )
 
-    # 2. Primary Navigation Items (only 4)
+    # 2. Modern Theme Switcher (Dark / Light)
+    active_theme = st.session_state.get("theme", "dark")
+    theme_choice = st.radio(
+        "Theme",
+        options=["🌙 Dark", "☀️ Light"],
+        index=0 if active_theme == "dark" else 1,
+        horizontal=True,
+        label_visibility="collapsed",
+        key="app_theme_toggle",
+    )
+    chosen_theme = "light" if "Light" in theme_choice else "dark"
+    if chosen_theme != active_theme:
+        st.session_state["theme"] = chosen_theme
+        st.rerun()
+
+    st.markdown("<div style='margin-bottom: 12px;'></div>", unsafe_allow_html=True)
+
+    # 3. Primary Navigation Items (only 4)
     nav_selection = st.radio(
         "Navigation",
         [
@@ -87,7 +113,7 @@ with st.sidebar:
     # Natural spacing for profile
     st.markdown("<div style='margin-top: 36px;'></div>", unsafe_allow_html=True)
 
-    # 3. User Profile at bottom
+    # 4. User Profile at bottom
     render_sidebar_profile(initials="IM", name="Ishita Mukhopadhyay")
 
 # Route to active view

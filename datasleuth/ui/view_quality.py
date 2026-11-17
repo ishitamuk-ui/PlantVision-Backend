@@ -22,11 +22,11 @@ def render_quality_view() -> None:
     # Section Header
     st.markdown(
         """
-        <div style="margin-bottom: 20px;">
-            <h1 style="font-family: 'Playfair Display', Georgia, serif; font-size: 30px; font-weight: 700; color: #FFFFFF; margin: 0;">
+        <div style="margin-bottom: 22px;">
+            <h1 class="view-title">
                 Dataset Quality Audit
             </h1>
-            <div style="font-size: 13.5px; color: #94A3B8; margin-top: 3px;">
+            <div class="view-subtitle">
                 Exhaustive structural diagnostics, missingness rates, outlier boundaries, and heuristic anomaly detection.
             </div>
         </div>

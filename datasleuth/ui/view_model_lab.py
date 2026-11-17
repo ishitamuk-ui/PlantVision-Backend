@@ -3,7 +3,12 @@
 import plotly.express as px
 import streamlit as st
 
-from datasleuth.config import CONFIG
+from datasleuth.eda import (
+    get_current_theme,
+    get_plotly_layout,
+    get_plotly_template,
+    get_theme_palette,
+)
 from datasleuth.modeling import (
     BenchmarkSuiteResult,
     get_default_features,
@@ -24,14 +29,16 @@ def render_model_lab_view() -> None:
         st.warning("No active dataset found. Please upload a CSV or select a benchmark dataset from the Overview page.")
         return
 
+    t = get_current_theme()
+
     # Section Header
     st.markdown(
         """
         <div style="margin-bottom: 24px;">
-            <h1 style="font-family: 'Playfair Display', Georgia, serif; font-size: 32px; font-weight: 700; color: #FFFFFF; margin: 0;">
+            <h1 class="view-title">
                 ML Benchmark Suite
             </h1>
-            <div style="font-size: 14px; color: #94A3B8; margin-top: 4px;">
+            <div class="view-subtitle">
                 Train standardized baseline estimators with leak-free preprocessing pipelines and compare evaluation metrics.
             </div>
         </div>
@@ -182,17 +189,13 @@ def render_model_lab_view() -> None:
             y="Score",
             color="Metric",
             barmode="group",
-            template="plotly_dark",
-            color_discrete_sequence=CONFIG.COLOR_PALETTE,
+            template=get_plotly_template(t),
+            color_discrete_sequence=get_theme_palette(t),
             title="Classification Baselines Across Key Metrics",
         )
         fig_bar.update_layout(
+            **get_plotly_layout(t),
             yaxis_range=[0, 1.05],
-            font={"family": "Inter, sans-serif", "color": "#94A3B8"},
-            paper_bgcolor="rgba(0,0,0,0)",
-            plot_bgcolor="rgba(0,0,0,0)",
-            xaxis={"gridcolor": "rgba(255, 255, 255, 0.06)", "linecolor": "rgba(255, 255, 255, 0.15)"},
-            yaxis={"gridcolor": "rgba(255, 255, 255, 0.06)", "linecolor": "rgba(255, 255, 255, 0.15)"},
         )
         st.plotly_chart(fig_bar, use_container_width=True)
     else:
@@ -201,17 +204,13 @@ def render_model_lab_view() -> None:
             x="Model",
             y="RMSE",
             color="Model",
-            template="plotly_dark",
-            color_discrete_sequence=CONFIG.COLOR_PALETTE,
+            template=get_plotly_template(t),
+            color_discrete_sequence=get_theme_palette(t),
             title="Model Comparison by Root Mean Squared Error (Lower is Better)",
         )
         fig_bar.update_layout(
-            font={"family": "Inter, sans-serif", "color": "#94A3B8"},
+            **get_plotly_layout(t),
             showlegend=False,
-            paper_bgcolor="rgba(0,0,0,0)",
-            plot_bgcolor="rgba(0,0,0,0)",
-            xaxis={"gridcolor": "rgba(255, 255, 255, 0.06)", "linecolor": "rgba(255, 255, 255, 0.15)"},
-            yaxis={"gridcolor": "rgba(255, 255, 255, 0.06)", "linecolor": "rgba(255, 255, 255, 0.15)"},
         )
         st.plotly_chart(fig_bar, use_container_width=True)
 
